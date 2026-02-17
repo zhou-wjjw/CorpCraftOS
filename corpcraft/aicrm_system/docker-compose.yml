@@ -1,0 +1,156 @@
+version: '3.8'
+
+services:
+  # PostgreSQL数据库
+  postgres:
+    image: postgres:15
+    container_name: aicrm_postgres
+    environment:
+      POSTGRES_DB: aicrm_db
+      POSTGRES_USER: aicrm_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - aicrm_network
+
+  # Redis缓存
+  redis:
+    image: redis:7-alpine
+    container_name: aicrm_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - aicrm_network
+
+  # MongoDB文档存储
+  mongodb:
+    image: mongo:7
+    container_name: aicrm_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - aicrm_network
+
+  # 后端API服务
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aicrm_backend
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=aicrm_db
+      - POSTGRES_USER=aicrm_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=27017
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+      - mongodb
+    volumes:
+      - ./backend:/app
+      - ./data:/app/data
+      - ./logs:/app/logs
+    networks:
+      - aicrm_network
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Celery Worker
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aicrm_celery_worker
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=aicrm_db
+      - POSTGRES_USER=aicrm_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./backend:/app
+      - ./data:/app/data
+      - ./logs:/app/logs
+    networks:
+      - aicrm_network
+    command: celery -A app.tasks worker --loglevel=info
+
+  # Celery Beat (定时任务)
+  celery_beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aicrm_celery_beat
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    volumes:
+      - ./backend:/app
+    networks:
+      - aicrm_network
+    command: celery -A app.tasks beat --loglevel=info
+
+  # 前端服务
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aicrm_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - aicrm_network
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+
+  # Nginx反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: aicrm_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - aicrm_network
+
+volumes:
+  postgres_data:
+  redis_data:
+  mongodb_data:
+
+networks:
+  aicrm_network:
+    driver: bridge

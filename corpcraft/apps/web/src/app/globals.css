@@ -1,0 +1,128 @@
+/* ──────────────────────────────────────────────
+   CorpCraft OS V4.2 — Global Styles
+   Dark theme · Glassmorphism · Monospace data
+   ────────────────────────────────────────────── */
+
+/* ── CSS Variables ── */
+:root {
+  --cc-bg: #0a0a0f;
+  --cc-surface: rgba(10, 10, 15, 0.7);
+  --cc-border: rgba(255, 255, 255, 0.08);
+  --cc-text: #ffffff;
+  --cc-text-muted: rgba(255, 255, 255, 0.5);
+  --cc-text-dim: rgba(255, 255, 255, 0.3);
+  --cc-green: #4ade80;
+  --cc-blue: #60a5fa;
+  --cc-red: #f87171;
+  --cc-yellow: #facc15;
+  --cc-orange: #fb923c;
+  --cc-purple: #a78bfa;
+  --cc-font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', ui-monospace, monospace;
+  --cc-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, Oxygen, Ubuntu, sans-serif;
+  --cc-radius: 12px;
+  --cc-blur: 12px;
+}
+
+/* ── Reset ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: var(--cc-font-sans);
+  background: var(--cc-bg);
+  color: var(--cc-text);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ── Glassmorphism Utility ── */
+.glass {
+  background: var(--cc-surface);
+  backdrop-filter: blur(var(--cc-blur));
+  -webkit-backdrop-filter: blur(var(--cc-blur));
+  border: 1px solid var(--cc-border);
+  border-radius: var(--cc-radius);
+}
+
+.glass-strong {
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--cc-border);
+  border-radius: var(--cc-radius);
+}
+
+/* ── Scrollbar Styling ── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+/* ── Selection ── */
+::selection {
+  background: rgba(74, 222, 128, 0.25);
+  color: #fff;
+}
+
+/* ── Focus Visible ── */
+:focus-visible {
+  outline: 2px solid var(--cc-green);
+  outline-offset: 2px;
+}
+
+/* ── Input Reset ── */
+input,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@corpcraft/gateway",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch --env-file=.env src/server.ts",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@corpcraft/asset-registry": "workspace:^",
+    "@corpcraft/contracts": "workspace:*",
+    "@corpcraft/event-bus": "workspace:*",
+    "@corpcraft/policy-audit": "workspace:^",
+    "@corpcraft/swarm-engine": "workspace:*",
+    "@fastify/cors": "^11.2.0",
+    "@fastify/websocket": "^11.0.0",
+    "fastify": "^5.2.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

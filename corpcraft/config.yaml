@@ -1,0 +1,96 @@
+# Hello World Program Configuration
+
+# Default settings
+default:
+  name: "World"
+  times: 1
+  language: "en"
+  output_format: "console"
+  verbose: false
+
+# Language presets
+languages:
+  english:
+    code: "en"
+    greeting: "Hello"
+  chinese:
+    code: "zh"
+    greeting: "你好"
+  spanish:
+    code: "es"
+    greeting: "Hola"
+  french:
+    code: "fr"
+    greeting: "Bonjour"
+  german:
+    code: "de"
+    greeting: "Hallo"
+  japanese:
+    code: "ja"
+    greeting: "こんにちは"
+  korean:
+    code: "ko"
+    greeting: "안녕하세요"
+  russian:
+    code: "ru"
+    greeting: "Привет"
+  arabic:
+    code: "ar"
+    greeting: "مرحبا"
+  italian:
+    code: "it"
+    greeting: "Ciao"
+
+# Output formats
+formats:
+  console:
+    description: "Plain text output to console"
+    extension: "txt"
+  json:
+    description: "JSON formatted output"
+    extension: "json"
+  html:
+    description: "HTML formatted output with styling"
+    extension: "html"
+
+# Examples
+examples:
+  - name: "basic"
+    command: "python hello_world.py"
+    description: "Basic greeting"
+
+  - name: "personalized"
+    command: "python hello_world.py --name Alice"
+    description: "Personalized greeting"
+
+  - name: "repeated"
+    command: "python hello_world.py --name Bob --times 3"
+    description: "Greeting repeated 3 times"
+
+  - name: "chinese"
+    command: "python hello_world.py --language zh --name 张三"
+    description: "Chinese greeting"
+
+  - name: "json_output"
+    command: "python hello_world.py --format json --name John"
+    description: "JSON formatted output"
+
+  - name: "html_output"
+    command: "python hello_world.py --format html --name Jane"
+    description: "HTML formatted output"
+
+  - name: "verbose"
+    command: "python hello_world.py --language es --name Carlos --verbose"
+    description: "Verbose output in Spanish"
+
+# Logging configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"
+
+# Development settings
+development:
+  debug: false
+  test_mode: false
+  output_directory: "./output"

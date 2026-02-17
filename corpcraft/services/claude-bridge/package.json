@@ -1,0 +1,21 @@
+{
+  "name": "@corpcraft/claude-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@corpcraft/contracts": "workspace:*",
+    "@anthropic-ai/claude-agent-sdk": "^0.1.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

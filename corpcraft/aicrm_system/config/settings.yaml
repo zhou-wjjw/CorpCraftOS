@@ -1,0 +1,199 @@
+# AICRM System Configuration
+
+app:
+  name: "AICRM System"
+  version: "1.0.0"
+  environment: "development"
+  debug: true
+  secret_key: "your-secret-key-change-in-production"
+  allowed_hosts: ["*"]
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: true
+
+database:
+  postgresql:
+    host: "localhost"
+    port: 5432
+    name: "aicrm_db"
+    user: "aicrm_user"
+    password: "changeme"
+    pool_size: 20
+    max_overflow: 10
+
+  mongodb:
+    host: "localhost"
+    port: 27017
+    name: "aicrm_mongo"
+    user: ""
+    password: ""
+
+  redis:
+    host: "localhost"
+    port: 6379
+    db: 0
+    password: ""
+    max_connections: 50
+
+scraping:
+  # 请求配置
+  timeout: 30
+  max_retries: 3
+  retry_delay: 5
+  concurrent_requests: 16
+  download_delay: 0.5
+
+  # User Agent 轮换
+  user_agents:
+    - "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    - "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
+  # 代理配置
+  proxy:
+    enabled: true
+    pool_size: 100
+    rotation_interval: 300
+    test_url: "http://httpbin.org/ip"
+    timeout: 10
+
+    # 代理源配置
+    sources:
+      - type: "free"
+        url: "https://www.proxy-list.download/api/v1/get?type=http"
+      - type: "paid"
+        provider: "your-proxy-provider"
+        api_key: "your-api-key"
+
+  # 速率限制
+  rate_limit:
+    enabled: true
+    requests_per_second: 2
+    burst: 10
+    per_ip: true
+
+  # 浏览器配置
+  browser:
+    headless: true
+    disable_images: true
+    disable_javascript: false
+    window_size: [1920, 1080]
+    user_data_dir: "/tmp/browser_data"
+
+captcha:
+  # OCR 配置
+  ocr:
+    enabled: true
+    engine: "tesseract"  # tesseract, ddddocr
+    tesseract_path: "/usr/bin/tesseract"
+    tesseract_lang: "eng+chi_sim"
+
+  # 第三方服务
+  services:
+    - name: "2captcha"
+      enabled: false
+      api_key: "your-2captcha-api-key"
+
+    - name: "anticaptcha"
+      enabled: false
+      api_key: "your-anticaptcha-api-key"
+
+    - name: "deathbycaptcha"
+      enabled: false
+      api_key: "your-dbc-api-key"
+
+ai_services:
+  # OpenAI 配置
+  openai:
+    enabled: true
+    api_key: "your-openai-api-key"
+    model: "gpt-4-turbo-preview"
+    temperature: 0.7
+    max_tokens: 2000
+
+  # Anthropic 配置
+  anthropic:
+    enabled: true
+    api_key: "your-anthropic-api-key"
+    model: "claude-3-opus-20240229"
+    temperature: 0.7
+    max_tokens: 2000
+
+  # 本地模型配置
+  local:
+    enabled: false
+    model_path: "/models/local-llm"
+    device: "cuda"
+
+# 反爬虫策略
+anti_detection:
+  # 请求头伪装
+  headers:
+    random: true
+    default:
+      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+      Accept-Language: "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7"
+      Accept-Encoding: "gzip, deflate, br"
+      Connection: "keep-alive"
+      Upgrade-Insecure-Requests: "1"
+
+  # Cookie 管理
+  cookies:
+    enabled: true
+    jar_size: 1000
+    persistence: true
+
+  # Session 管理
+  sessions:
+    enabled: true
+    pool_size: 50
+    rotation: true
+
+  # 指纹识别对抗
+  fingerprint:
+    random_canvas: true
+    random_webgl: true
+    random_audio: true
+    random_timezone: true
+
+# 数据存储
+storage:
+  data_dir: "./data"
+  export_formats: ["csv", "json", "xlsx", "parquet"]
+  max_file_size: "100MB"
+
+# 日志配置
+logging:
+  level: "INFO"
+  format: "json"
+  outputs:
+    - type: "console"
+      level: "DEBUG"
+    - type: "file"
+      level: "INFO"
+      path: "./logs/aicrm.log"
+      rotation: "100 MB"
+  retention: "30 days"
+
+# 监控配置
+monitoring:
+  enabled: true
+  prometheus:
+    port: 9090
+  health_check:
+    interval: 30
+  metrics:
+    - "scrape_success_rate"
+    - "captcha_solve_rate"
+    - "proxy_health"
+    - "request_duration"
+
+# 任务队列
+celery:
+  broker_url: "redis://localhost:6379/1"
+  result_backend: "redis://localhost:6379/2"
+  task_soft_time_limit: 300
+  task_time_limit: 600
